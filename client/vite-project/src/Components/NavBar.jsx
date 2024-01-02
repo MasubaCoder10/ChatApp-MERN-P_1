@@ -11,11 +11,11 @@ export default function NavBar() {
         <h2>
             <Link to="/" className="link-light text-decoration-none">Fada</Link>
         </h2>
-        <span className="text-warning">Logged in as {user?.name} </span>
+        { user && <span className="text-warning"> Logged in as {user?.name} </span> }
         <Nav >
             <Stack direction="horizontal" gap={4}>
                 {user && (<>
-                  <Link to="/Login" onClick={()=> logoutUser} className="link-light text-decoration-none">Logout</Link>
+                  <Link to="/Login" onClick={()=> logoutUser()} className="link-light text-decoration-none">Logout</Link>
                 </>)}
                 {!user && (
                   <>

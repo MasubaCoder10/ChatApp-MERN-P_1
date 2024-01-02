@@ -7,6 +7,8 @@ const createToken = (_id =>{
     const jwtKey = process.env.JWT_SECRET_KEY;
     return jwt.sign({_id}, jwtKey, {expiresIn: "3d"})
 })
+
+//register user
 module.exports.registerUser = async(req, res) =>{
     try{
         const {name, email, password} = req.body;
@@ -40,9 +42,10 @@ module.exports.registerUser = async(req, res) =>{
     
 };
 
+//login user
 module.exports.loginUser = async(req, res) =>{
     try{
-        const {name, email, password} = req.body;
+        const {email, password} = req.body;
         let user = await userModel.findOne({email});
         if(!user){
             return res.status(404).json("Invalid email or password");
