@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import {Form, Alert, Button, Col, Row, Stack} from 'react-bootstrap'
 import { AuthContext } from '../Context/AuthContext'
 export default function Login() {
-  const {loginError, isLoginLoading, updateLoginInfo, loginInfo, loginUser, registerUser} = useContext(AuthContext);
+  const {loginError, isLoginLoading, updateLoginInfo, loginInfo, loginUser} = useContext(AuthContext);
   return (
     <div>
       <Form onSubmit={loginUser}>

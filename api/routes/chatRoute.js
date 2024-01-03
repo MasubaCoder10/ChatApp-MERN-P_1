@@ -4,7 +4,7 @@ const {createChat, findUsersChats, findChat} = require("../controllers/ChatCotro
 const router = express.Router();
 
 router.post("/", createChat);
-router.get('/findUsers/:userId', findUsersChats)
-router.get('/findChat/:firstId/:secondId', findChat);
+router.get('/:userId', findUsersChats)
+router.get('/find/:firstId/:secondId', findChat);
 
 module.exports = router;
