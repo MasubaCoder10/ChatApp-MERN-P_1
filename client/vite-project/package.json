@@ -15,6 +15,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.2",
     "react-dom": "^18.2.0",
+    "react-input-emoji": "^5.6.5",
     "react-router-dom": "^6.21.1"
   },
   "devDependencies": {
@@ -23,7 +24,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^5.0.0-canary-1d5667a12-20240102",
     "eslint-plugin-react-refresh": "^0.4.5",
     "vite": "^5.0.8"
   }

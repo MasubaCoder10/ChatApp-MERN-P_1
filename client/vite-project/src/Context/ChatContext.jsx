@@ -12,8 +12,10 @@ export const ChatContentProvider = ({children, user})=>{
     const [messages, setMessages] = useState(null);
     const [messageError, setMessageError] = useState(null);
     const [isMessageLoading, setIsMessageLoading] = useState(false);
+    const [sendTextMessageError, setSendTextMessageError] = useState(null);
+    const [newMessage, setNewMessage] = useState(null);
 
-    console.log("messageeeee", messages);
+    console.log("currentChattt Context", currentChat);
     
 
     useEffect(()=>{
@@ -61,9 +63,6 @@ export const ChatContentProvider = ({children, user})=>{
         getUserChat()
     }, [user])
  
-    const updateCurrentChat = useCallback((chat)=>{
-        setCurrentChat(chat);
-    }, []);
 
     useEffect(()=>{
         const getMessages = async()=>{
@@ -71,7 +70,6 @@ export const ChatContentProvider = ({children, user})=>{
             setMessageError(null);
 
             const response = await getRequest(`${baseUrl}/messages/getAllmessage/${currentChat?._id}`)
-            console.log("currentChatttttt", currentChat);
             setIsMessageLoading(false);
 
             if(response.error) return setMessageError(response);
@@ -80,6 +78,24 @@ export const ChatContentProvider = ({children, user})=>{
         }
         getMessages()
     }, [currentChat]);
+
+    const updateCurrentChat = useCallback((chat)=>{
+        setCurrentChat(chat);
+    }, []);
+
+
+const sendTextMessage = useCallback(async(textMessage, sender, currentChatId, setTextMeassage)=>{
+    if(!textMessage) return console.log("You must type something...");
+    const response = await postRequest(`${baseUrl}/messages/message`, JSON.stringify({chatId: currentChat, senderId: sender._id, content:textMessage}))
+    if(response.error){
+        return setSendTextMessageError(response)
+    }
+    setNewMessage(response);
+    setMessages((prev)=>[...prev, response])
+    setTextMeassage("")
+   
+}, [])
+
 
 const createChat = useCallback(async(firstId, secondId)=>{
     const response = await postRequest(`${baseUrl}/chats`, JSON.stringify({
@@ -92,7 +108,7 @@ const createChat = useCallback(async(firstId, secondId)=>{
 },[])
     return (
     <>
-        <ChatContent.Provider value={{userChats, userChatError, isUserChatLoading, potentialChat, createChat, updateCurrentChat, messages, messageError, isMessageLoading}}>
+        <ChatContent.Provider value={{userChats, userChatError, isUserChatLoading, potentialChat, createChat, updateCurrentChat, messages, messageError, isMessageLoading, sendTextMessage, currentChat}}>
             {children}
         </ChatContent.Provider>
     </>)
