@@ -2,10 +2,10 @@ const Message = require("../models/messageMedel");
 
 // Create a new message
 module.exports.messages = async(req, res)=>{
-    const {sender, receiver, content} = req.body;
+    const {chatId, senderId, content} = req.body;
     try{
         const newmMessage =new Message({
-            sender, receiver, content
+            chatId, senderId, content
         });
 
         const savedMessage = await newmMessage.save();
@@ -19,13 +19,10 @@ module.exports.messages = async(req, res)=>{
 // Get all messages between two users
 
 module.exports.getAllMessages = async(req, res)=>{
-    const {senderId, receiverId} = req.params;
+    const {chatId} = req.params;
 
     try{
-        const messages = await Message.find({
-            $or:[{sender: senderId, receiver: receiverId},
-            {receiver: receiverId, sender: senderId}]
-        }).sort('timestamp');
+        const messages = await Message.find({chatId})
 
         res.status(200).json(messages);
     }catch(error){

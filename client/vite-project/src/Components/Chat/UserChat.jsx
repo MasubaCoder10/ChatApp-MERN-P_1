@@ -1,15 +1,14 @@
 import { useFetchRecipientUser } from "../../../Hooks/useFetchRecipient"
 import { Stack } from "react-bootstrap";
-import {profil} from "../../assets/profile.png"
+import profil from "../../assets/profile.png"
 export default function UserChat({chat, user}) {
-    const {recipientUser} = useFetchRecipientUser(user, chat);
-    console.log(recipientUser);
+    const {recipientUser} = useFetchRecipientUser(chat, user);
   return (
     <div>
       <Stack direction="horizontal" gap={3} className="user-card align-items-center p-2 justify-content-between" role="button">
         <div className="d-flex">
             <div className="me-2">
-                <img src= {profil} height="35px"/>
+                <img src= {profil} height="35px" />
             </div>
             <div className="text-content">
                 <div className="name">
@@ -24,7 +23,7 @@ export default function UserChat({chat, user}) {
                 12/12/02
             </div>
             <div className="this-user-notifications">2</div>
-            <span className="user-onligne"></span>
+            <span className="user-online"></span>
         </div>
       </Stack>
     </div>

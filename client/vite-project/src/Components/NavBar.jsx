@@ -4,7 +4,6 @@ import {Container, Nav, Navbar, Stack} from "react-bootstrap"
 import {Link} from "react-router-dom"
 export default function NavBar() {
   const {user, logoutUser} = useContext(AuthContext)
-  console.log();
   return (
     <Navbar bg="dark" className="mb-4" style={{height:"3.75rem"}}>
       <Container>

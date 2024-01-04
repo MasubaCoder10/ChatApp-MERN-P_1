@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 // Define a schema for a Message
 const messageSchema = new mongoose.Schema({
-    sender: String,
-    receiver: String,
+    chatId: String,
+    senderId: String,
     content:  String, 
 },
 {

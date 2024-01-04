@@ -59,7 +59,6 @@ export const AuthContextProvider = ({children}) =>{
         setLoginError(null);
 
         const response = await postRequest(`${baseUrl}/users/login`, JSON.stringify(loginInfo));
-        console.log("login response: ", response);
         setIsLoginLoading(false);
         if(response.error){
             return setLoginError(response);
