@@ -10,11 +10,13 @@ export default function ChatBox() {
     const {currentChat, messages, isMessageLoading, sendTextMessage} = useContext(ChatContent);
     const {recipientUser} = useFetchRecipientUser(currentChat, user);
     const [textMessage, setTextMeassage] = useState("");
-    /* if(!recipientUser) return (
+    console.log("currentChat",currentChat);
+
+    if(!recipientUser) return (
         <p style={{textAlign: "center", width: "100%"}}>
             No conversation selected yet...
         </p>
-    ) */
+    )
     if(isMessageLoading) return (
         <p style={{textAlign: "center", width: "100%"}}>
             Loading chat...

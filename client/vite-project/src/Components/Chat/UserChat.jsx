@@ -1,8 +1,13 @@
 import { useFetchRecipientUser } from "../../../Hooks/useFetchRecipient"
 import { Stack } from "react-bootstrap";
 import profil from "../../assets/profile.png"
+import { useContext } from "react";
+import { ChatContent } from "../../Context/chatContext";
 export default function UserChat({chat, user}) {
     const {recipientUser} = useFetchRecipientUser(chat, user);
+    const {onlineUsers} = useContext(ChatContent);
+
+    const isOnline = onlineUsers?.some((user) =>{user?.userId=== recipientUser})
   return (
     <div>
       <Stack direction="horizontal" gap={3} className="user-card align-items-center p-2 justify-content-between" role="button">
@@ -23,7 +28,7 @@ export default function UserChat({chat, user}) {
                 12/12/02
             </div>
             <div className="this-user-notifications">2</div>
-            <span className="user-online"></span>
+            <span className={isOnline?"user-online":""}></span>
         </div>
       </Stack>
     </div>
