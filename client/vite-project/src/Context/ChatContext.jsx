@@ -16,8 +16,10 @@ export const ChatContentProvider = ({children, user})=>{
     const [newMessage, setNewMessage] = useState(null);
     const [socket, setSocket]= useState(null)
     const [onlineUsers, setOnlineUsers]= useState([])
-    console.log("onlineUsers Context", onlineUsers);
+    const [sendNotification, setSendNotification]= useState([])
+    const [allUsers, setAllUsers]= useState([])
     
+    console.log("sendNotification", sendNotification);
     // inital socket
 
     useEffect(()=>{
@@ -36,7 +38,8 @@ export const ChatContentProvider = ({children, user})=>{
         return ()=>{
             socket.off("getOnlineUsers")
         }
-    },[socket])
+    },[socket]);
+
 //send message
 
 useEffect(()=>{
@@ -45,6 +48,7 @@ useEffect(()=>{
     socket.emit("sendMessage", {...newMessage, recipientId})
 },[newMessage]);
 
+// receive message && notification
 useEffect(()=>{
     if(socket ==null) return;
     socket.on("getMessage", res =>{
@@ -54,8 +58,19 @@ useEffect(()=>{
 
         setMessages((prev)=>[...prev , res])
     })
+
+    socket.on("getNotification", (res)=>{
+        const isChatOpen = currentChat?.members?.some(id=> id=== res.senderId)
+        if(isChatOpen){
+            setSendNotification(prev=> [{...res, isRead:true}, ...prev])
+        }else{
+            setSendNotification(prev=>[res, ...prev])
+        }
+    });
+
     return ()=>{
             socket.off("getMessage")
+            socket.off("getNotification")
         }
 },[socket, currentChat])
 
@@ -82,6 +97,7 @@ useEffect(()=>{
                 return !isChatCreated
             })
             setPotentialChat(pChats);
+            setAllUsers(response)
         }
         getUsers();
     },[userChats]);
@@ -128,7 +144,7 @@ useEffect(()=>{
 
 const sendTextMessage = useCallback(async(textMessage, sender, currentChatId, setTextMeassage)=>{
     if(!textMessage) return console.log("You must type something...");
-    const response = await postRequest(`${baseUrl}/messages/message`, JSON.stringify({chatId: currentChat, senderId: sender._id, content:textMessage}))
+    const response = await postRequest(`${baseUrl}/messages/message`, JSON.stringify({chatId: currentChatId, senderId: sender._id, content:textMessage}))
     if(response.error){
         return setSendTextMessageError(response)
     }
@@ -148,9 +164,58 @@ const createChat = useCallback(async(firstId, secondId)=>{
     if(response.error) return console.log("Error creating chat", response);
     setUserChats((prev) =>[...prev, response]);
 },[])
+
+const markAllNotificationAsRead = useCallback((sendNotification)=>{
+    const mNotification = sendNotification.map((n)=>{ return {...n, isRead:true}});
+    setSendNotification(mNotification);
+},[])
+
+const markNotificationAsReadByClick = useCallback((n, userChats, user, sendNotification)=>{
+    //find chat to open
+
+    const desiredChat = userChats.find(chat =>{
+        const chatMembers =[user._id, n.senderId];
+        const isDesiredChat = chat?.members.every((member)=>{
+            return chatMembers.includes(member);
+        })
+        return isDesiredChat;
+    });
+    // mark notification as read
+
+    const mNotifications = sendNotification.map(el=>{
+        if(n.senderId===el.secondId){
+            return {...n, isRead: true}
+        }else{
+            return el;
+        }
+
+
+    })
+    updateCurrentChat(desiredChat);
+    setSendNotification(mNotifications)
+}, []);
+
+const markThisUserNotificationAsRead = useCallback((thisUserNotification, sendNotification)=>{
+    //mark notifications as read
+
+    const mNotification = sendNotification.map(el=>{
+        let notification;
+        thisUserNotification.forEch(n=>{
+            if(n.senderId === el.senderId){
+                notification = {...n, isRead:true}
+            }else{
+                notification =el;
+            }
+        })
+        return notification;
+    })
+
+    setSendNotification(mNotification)
+},[]);
+
     return (
     <>
-        <ChatContent.Provider value={{userChats, userChatError, isUserChatLoading, potentialChat, createChat, updateCurrentChat, messages, messageError, isMessageLoading, sendTextMessage, currentChat, onlineUsers}}>
+        <ChatContent.Provider value={{userChats, allUsers, userChatError, isUserChatLoading, potentialChat, createChat, updateCurrentChat, messages, messageError, isMessageLoading, sendTextMessage, currentChat, onlineUsers, sendNotification, markAllNotificationAsRead, markNotificationAsReadByClick, markThisUserNotificationAsRead}}>
             {children}
         </ChatContent.Provider>
     </>)

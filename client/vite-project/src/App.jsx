@@ -6,8 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import {Container} from 'react-bootstrap'
 import NavBar from "./Components/NavBar"
 import { useContext } from "react"
-import { ChatContentProvider } from "./Context/ChatContext";
 import { AuthContext } from './Context/AuthContext';
+import { ChatContentProvider } from "./Context/chatContext"
 
 function App() {
   const {user} = useContext(AuthContext);
